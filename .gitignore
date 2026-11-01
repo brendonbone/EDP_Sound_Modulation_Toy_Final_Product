@@ -1,0 +1,21 @@
+build
+mx.scratch
+!.settings
+.settings/bundles.store.json
+.settings/bundles-lock.store.json
+
+
+*.json
+# ...but CMake presets are source: the blanket rule above silently dropped
+# PD5b_Jack/Tom/Tony/CMakePresets.json, which broke `cmake --preset` in CI.
+!CMakePresets.json
+
+.settings/bundles-lock.store.json
+.settings/bundles.store.json
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+.settings/bundles-lock.store.json
+.settings/bundles-lock.store.json
+
+# macOS Finder metadata (it was committed by mistake twice before)
+.DS_Store

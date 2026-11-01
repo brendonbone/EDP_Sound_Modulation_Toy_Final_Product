@@ -1,0 +1,30 @@
+PD5 Audio Effects + TD-PSOLA Research Autotune
+Validation performed before packaging
+
+Clean configure/build:
+  cmake --preset host-macos
+  cmake --build --preset host-macos
+  Result: success, no compiler warnings from project sources
+
+CTest:
+  audio_effects_behaviour .............. PASSED
+  td_psola_autotune_research ........... PASSED
+  audio_effects_orchestration .......... PASSED
+  Result: 3/3 CTest targets passed
+
+Individual Unity scenarios:
+  Existing behavioural DSP tests: 67 passed
+  TD-PSOLA research tests:         5 passed
+  Mock/orchestration tests:        4 passed
+  TOTAL:                          76 passed, 0 failed
+
+TD-PSOLA synthetic pitch smoke test:
+  input section 1: 445 Hz -> measured output approximately 440.37 Hz
+  input section 2: 458 Hz -> measured output approximately 466.02 Hz
+  Both sections therefore moved toward the nearest chromatic semitone.
+
+Important limitation:
+  The new TD-PSOLA processor is intentionally an offline host-side research
+  implementation for real-voice listening comparison. It allocates work
+  buffers proportional to recording length and is not yet the final fixed-RAM
+  STM32 streaming implementation.

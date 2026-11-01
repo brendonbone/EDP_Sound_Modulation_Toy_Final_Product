@@ -1,0 +1,82 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "host-macos",
+      "displayName": "Host macOS Debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/host-macos",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "host-windows",
+      "displayName": "Host Windows Debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/host-windows",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "host-linux",
+      "displayName": "Host Linux Debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/host-linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "coverage-macos",
+      "displayName": "macOS LLVM Coverage",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/coverage-macos",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": "ON",
+        "ENABLE_COVERAGE": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "host-macos", "configurePreset": "host-macos" },
+    { "name": "host-windows", "configurePreset": "host-windows" },
+    { "name": "host-linux", "configurePreset": "host-linux" },
+    { "name": "coverage-macos", "configurePreset": "coverage-macos" }
+  ],
+  "testPresets": [
+    {
+      "name": "host-macos",
+      "configurePreset": "host-macos",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "host-windows",
+      "configurePreset": "host-windows",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "host-linux",
+      "configurePreset": "host-linux",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "coverage-macos",
+      "configurePreset": "coverage-macos",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}

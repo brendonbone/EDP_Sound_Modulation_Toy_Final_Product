@@ -1,0 +1,9 @@
+* text=auto
+*.ioc text eol=crlf
+*.elf binary
+*.bin binary
+*.hex binary
+*.wav binary
+*.pdf binary
+*.docx binary
+*.png binary
