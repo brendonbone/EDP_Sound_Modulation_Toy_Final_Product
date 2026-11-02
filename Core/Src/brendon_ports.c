@@ -228,18 +228,32 @@ static int sd_card_absent(void)
     return (HAL_GPIO_ReadPin(SD_DETECT_GPIO_Port, SD_DETECT_Pin) == GPIO_PIN_SET) ? 1 : 0;
 }
 
+/* TEAM CODE (Brendon, approved 2 Nov 2026): no interrupt during the polled FIFO transfer.
+ * With SDIO flow control off, a priority-5 interrupt (I2S3 TX DMA every 4 ms,
+ * SDIO, SDIO DMA) pausing this loop lets the FIFO under/overrun and the block
+ * fails; macOS drops a failed cached write silently, so copied files came out
+ * damaged. One call is one 512-byte block (MSC_MEDIA_PACKET), ~150-200 us
+ * masked; the DTIMEOUT above still bounds it. msc_wait_idle runs unmasked. */
 static int sd_read_blocks(void *ctx, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
     (void)ctx;
     if (sd_card_absent()) return -1;
-    return (HAL_SD_ReadBlocks(&hsd, buf, blk_addr, blk_len, SD_BLOCK_TIMEOUT_MS) == HAL_OK) ? 0 : -1;
+    const uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    const HAL_StatusTypeDef st = HAL_SD_ReadBlocks(&hsd, buf, blk_addr, blk_len, SD_BLOCK_TIMEOUT_MS);
+    __set_PRIMASK(primask);
+    return (st == HAL_OK) ? 0 : -1;
 }
 
 static int sd_write_blocks(void *ctx, const uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
     (void)ctx;
     if (sd_card_absent()) return -1;
-    return (HAL_SD_WriteBlocks(&hsd, (uint8_t *)buf, blk_addr, blk_len, SD_BLOCK_TIMEOUT_MS) == HAL_OK) ? 0 : -1;
+    const uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    const HAL_StatusTypeDef st = HAL_SD_WriteBlocks(&hsd, (uint8_t *)buf, blk_addr, blk_len, SD_BLOCK_TIMEOUT_MS);
+    __set_PRIMASK(primask);
+    return (st == HAL_OK) ? 0 : -1;
 }
 
 static int sd_get_capacity(void *ctx, uint32_t *block_num, uint16_t *block_size)
